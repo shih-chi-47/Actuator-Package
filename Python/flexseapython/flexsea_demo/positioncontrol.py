@@ -12,11 +12,12 @@ def printDevice(actPackState):
 	print('Motor angle: ', actPackState.encoderAngle, ', Motor voltage: ', actPackState.motorVoltage)
 
 def fxPositionControl(port, baudRate, time = 5, time_step = 0.1,  resolution = 100):
-	
+	# open device
 	devId = fxOpen(port, baudRate, 0)
 	fxStartStreaming(devId, resolution, True)
 	sleep(0.1)
 
+	# setting initial angle
 	actPackState = fxReadDevice(devId)
 	printDevice(actPackState)
 	initialAngle = actPackState.encoderAngle
