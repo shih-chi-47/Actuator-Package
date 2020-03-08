@@ -75,6 +75,7 @@ def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 75
 	fxClose(devId)
 	
 	# Plot before we exit:
+	print("=== Plotting with matplotlib ===")
 	title = "Impedance Control Demo"
 	plt.plot(times, requests, color = 'b', label = 'Desired position')
 	plt.plot(times, measurements, color = 'r', label = 'Measured position')
