@@ -1,5 +1,8 @@
 import os, sys
-from time import sleep
+from time import sleep, time, strftime
+import matplotlib
+import matplotlib.pyplot as plt
+matplotlib.use('WebAgg')
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
@@ -11,7 +14,7 @@ def printDevice(actPackState):
 	print('Gyro X: ', actPackState.gyrox, ', Gyro Y: ', actPackState.gyroy, ' Gyro Z: ', actPackState.gyroz)
 	print('Motor angle: ', actPackState.encoderAngle, ', Motor voltage: ', actPackState.motorVoltage)
 
-def fxPositionControl(port, baudRate, time = 5, time_step = 0.1, delta = 7500, transition_time = 1.5, resolution = 100)
+def fxTwoPositionControl(port, baudRate, expTime = 5, time_step = 0.1, delta = 10000, transition_time = 1.5, resolution = 100):
     # open device
     devId = fxOpen(port, baudRate, 0)
     fxStartStreaming(devId, resolution, True)
@@ -28,22 +31,24 @@ def fxPositionControl(port, baudRate, time = 5, time_step = 0.1, delta = 7500, t
     num_pos = 2
 
     # setting loop duration and transition rate
-    num_time_steps = int(time/time_step)
+    num_time_steps = int(expTime/time_step)
     transition_steps = int(transition_time/time_step)
 
     # setting gains (devId, kp, ki, kd, K, B)
     fxSetGains(devId, 50, 3, 0, 0, 0)
 
     # setting position control at initial position
-    fxSendMotorCommand(devId, fxPosition, initialAngle)
-
+    fxSendMotorCommand(devId, FxPosition, initialAngle)
 
 	# matplotlib - initialize lists
-	requests = []
-	measurements = []
-	times = []
-	i = 0
-	t0 = time()
+    requests = []
+    measurements = []
+    times = []
+    i = 0
+    t0 = 0
+
+    sleep(0.4)
+    t0 = time()
 
     # start two position control
     for i in range(num_time_steps):
@@ -52,7 +57,7 @@ def fxPositionControl(port, baudRate, time = 5, time_step = 0.1, delta = 7500, t
 
         if i % transition_steps == 0:
             current_pos = (current_pos + 1) % num_pos
-            fxSendMotorCommand(devId, fxPosition, positions[current_pos])
+            fxSendMotorCommand(devId, FxPosition, positions[current_pos])
         sleep(time_step)
 
         preamble = "Holding position: {}...".format(positions[current_pos])
@@ -69,12 +74,12 @@ def fxPositionControl(port, baudRate, time = 5, time_step = 0.1, delta = 7500, t
     # Plot before exit:
     title = "Two Position Control Demo"
     plt.plot(times, requests, color = 'b', label = 'Desired position')
-	plt.plot(times, measurements, color = 'r', label = 'Measured position')
-	plt.xlabel("Time (s)")
-	plt.ylabel("Encoder position")
-	plt.title(title)
-	plt.legend(loc='upper right')
-	plt.show()
+    plt.plot(times, measurements, color = 'r', label = 'Measured position')
+    plt.xlabel("Time (s)")
+    plt.ylabel("Encoder position")
+    plt.title(title)
+    plt.legend(loc='upper right')
+    plt.show()
 
     return close_check
 
