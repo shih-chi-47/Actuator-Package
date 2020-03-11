@@ -1,8 +1,8 @@
 import os, sys
 from time import sleep, time, strftime
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use('WebAgg')
+# import matplotlib
+# import matplotlib.pyplot as plt
+# matplotlib.use('WebAgg')
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
@@ -73,13 +73,13 @@ def fxTwoPositionControl(port, baudRate, expTime = 5, time_step = 0.1, delta = 1
 
     # Plot before exit:
     title = "Two Position Control Demo"
-    plt.plot(times, requests, color = 'b', label = 'Desired position')
-    plt.plot(times, measurements, color = 'r', label = 'Measured position')
-    plt.xlabel("Time (s)")
-    plt.ylabel("Encoder position")
-    plt.title(title)
-    plt.legend(loc='upper right')
-    plt.show()
+    # plt.plot(times, requests, color = 'b', label = 'Desired position')
+    # plt.plot(times, measurements, color = 'r', label = 'Measured position')
+    # plt.xlabel("Time (s)")
+    # plt.ylabel("Encoder position")
+    # plt.title(title)
+    # plt.legend(loc='upper right')
+    # plt.show()
 
     return close_check
 

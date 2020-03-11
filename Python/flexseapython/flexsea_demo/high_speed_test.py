@@ -2,10 +2,10 @@ import os, sys, math
 from time import sleep, time, strftime
 from enum import Enum
 import numpy as np
-import matplotlib.pyplot as plt
-#Next two lines are used to plot in a browser:
-import matplotlib
-matplotlib.use('WebAgg')
+# import matplotlib.pyplot as plt
+# #Next two lines are used to plot in a browser:
+# import matplotlib
+# matplotlib.use('WebAgg')
 
 
 # Toggle profiling to identify any performance bottlenecks
@@ -229,125 +229,125 @@ def fxHighSpeedTest(port0, baudRate, port1="", controllerType=Controller.current
 	command_frequency = i / elapsed_time
 	print("i: " + str(i) + ", elapsed_time: " + str(elapsed_time))
 
-	if (controllerType == Controller.current):
-		plt.figure(1)
-		title = "Current control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
-			str(signalAmplitude) + " mA amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
-		plt.plot(times, requests, color = 'b', label = 'desired current')
-		plt.plot(times, measurements0, color = 'r', label = 'measured current')
-		plt.xlabel("Time (s)")
-		plt.ylabel("Motor current (mA)")
-		plt.title(title)
+# 	if (controllerType == Controller.current):
+# 		plt.figure(1)
+# 		title = "Current control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
+# 			str(signalAmplitude) + " mA amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
+# 		plt.plot(times, requests, color = 'b', label = 'desired current')
+# 		plt.plot(times, measurements0, color = 'r', label = 'measured current')
+# 		plt.xlabel("Time (s)")
+# 		plt.ylabel("Motor current (mA)")
+# 		plt.title(title)
 
-		plt.legend(loc='upper right')
+# 		plt.legend(loc='upper right')
 
-		# Draw a vertical line at the end of each cycle
-#		for endpoints in cycleStopTimes:
-#			plt.axvline(x=endpoints)
+# 		# Draw a vertical line at the end of each cycle
+# #		for endpoints in cycleStopTimes:
+# #			plt.axvline(x=endpoints)
 
-	elif (controllerType == Controller.position):
-		plt.figure(1)
-		title = "Position control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
-			str(signalAmplitude) + " ticks amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
-		plt.plot(times, requests, color = 'b', label = 'desired position')
-		plt.plot(times, measurements0, color = 'r', label = 'measured position')
-		plt.xlabel("Time (s)")
-		plt.ylabel("Encoder position")
-		plt.title(title)
+# 	elif (controllerType == Controller.position):
+# 		plt.figure(1)
+# 		title = "Position control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
+# 			str(signalAmplitude) + " ticks amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
+# 		plt.plot(times, requests, color = 'b', label = 'desired position')
+# 		plt.plot(times, measurements0, color = 'r', label = 'measured position')
+# 		plt.xlabel("Time (s)")
+# 		plt.ylabel("Encoder position")
+# 		plt.title(title)
 
-		plt.legend(loc='upper right')
+# 		plt.legend(loc='upper right')
 
-		# Draw a vertical line at the end of each cycle
-		for endpoints in cycleStopTimes:
-			plt.axvline(x=endpoints)
+# 		# Draw a vertical line at the end of each cycle
+# 		for endpoints in cycleStopTimes:
+# 			plt.axvline(x=endpoints)
 
-	###### begin command times plotting ########################################33
+# 	###### begin command times plotting ########################################33
 
-	# Babar: Following 6 lines are legacy code. Remove eventually.
-	#plt.figure(2)
-	#title = "Current and stream command times (aggregate)"
-	#plt.title(title)
-	#plt.plot(currentCommandTimes,color='b', label='Current Command Times')
-	#plt.plot(streamCommandTimes, color='r', label='Stream Command Times')
-	#plt.legend(loc='upper right')
-
-
-	plt.figure(2)
-	# Convert command times into millisec
-	currentCommandTimes = [i * 1000 for i in currentCommandTimes]
-	#np.savetxt('JFD.txt', np.array(currentCommandTimes), fmt='%.10f')
-	plt.plot(currentCommandTimes, color='b', label='Current Command Times')
-	plt.title("Commands")
-	plt.legend(loc='upper right')
-	plt.xlabel("Time (ms)")
-	plt.ylabel("Command Time (ms)")
-
-	plt.figure(3)
-	plt.yscale('log')
-	plt.hist(currentCommandTimes, bins=100, label = 'Current Commands')
-	plt.yscale('log')
-	plt.title("Commands")
-	plt.legend(loc='upper right')
-	plt.xlabel("Time (ms)")
-	plt.ylabel("Occurrences")
-
-	plt.figure(4)
-	streamCommandTimes = [i * 1000 for i in streamCommandTimes]
-	# Convert command times into millisec
-	plt.plot(streamCommandTimes, color='b', label='Stream Command Times')
-	plt.title("Commands")
-	plt.legend(loc='upper right')
-	plt.xlabel("Time (ms)")
-	plt.ylabel("Command Time (ms)")
-
-	plt.figure(5)
-	plt.yscale('log')
-	plt.hist(streamCommandTimes, bins=100, label = 'Stream Commands')
-	plt.yscale('log')
-	plt.title("Commands")
-	plt.legend(loc='upper right')
-	plt.xlabel("Time (ms)")
-	plt.ylabel("Occurrences")
+# 	# Babar: Following 6 lines are legacy code. Remove eventually.
+# 	#plt.figure(2)
+# 	#title = "Current and stream command times (aggregate)"
+# 	#plt.title(title)
+# 	#plt.plot(currentCommandTimes,color='b', label='Current Command Times')
+# 	#plt.plot(streamCommandTimes, color='r', label='Stream Command Times')
+# 	#plt.legend(loc='upper right')
 
 
-	##### end command times plotting ########################################33
+# 	plt.figure(2)
+# 	# Convert command times into millisec
+# 	currentCommandTimes = [i * 1000 for i in currentCommandTimes]
+# 	#np.savetxt('JFD.txt', np.array(currentCommandTimes), fmt='%.10f')
+# 	plt.plot(currentCommandTimes, color='b', label='Current Command Times')
+# 	plt.title("Commands")
+# 	plt.legend(loc='upper right')
+# 	plt.xlabel("Time (ms)")
+# 	plt.ylabel("Command Time (ms)")
 
-	if (secondDevice):
-		if (controllerType == Controller.current):
-			plt.figure(2)
-			title = "Current control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
-				str(signalAmplitude) + " mA amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
-			plt.plot(times, requests, color = 'b', label = 'desired current')
-			plt.plot(times, measurements1, color = 'r', label = 'measured current')
-			plt.xlabel("Time (s)")
-			plt.ylabel("Motor current (mA)")
-			plt.title(title)
+# 	plt.figure(3)
+# 	plt.yscale('log')
+# 	plt.hist(currentCommandTimes, bins=100, label = 'Current Commands')
+# 	plt.yscale('log')
+# 	plt.title("Commands")
+# 	plt.legend(loc='upper right')
+# 	plt.xlabel("Time (ms)")
+# 	plt.ylabel("Occurrences")
 
-			plt.legend(loc='upper right')
+# 	plt.figure(4)
+# 	streamCommandTimes = [i * 1000 for i in streamCommandTimes]
+# 	# Convert command times into millisec
+# 	plt.plot(streamCommandTimes, color='b', label='Stream Command Times')
+# 	plt.title("Commands")
+# 	plt.legend(loc='upper right')
+# 	plt.xlabel("Time (ms)")
+# 	plt.ylabel("Command Time (ms)")
 
-			# Draw a vertical line at the end of each cycle
-			for endpoints in cycleStopTimes:
-				plt.axvline(x=endpoints)
-
-		elif (controllerType == Controller.position):
-			plt.figure(2)
-			title = "Position control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
-				str(signalAmplitude) + " ticks amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
-			plt.plot(times, requests, color = 'b', label = 'desired position')
-			plt.plot(times, measurements1, color = 'r', label = 'measured position')
-			plt.xlabel("Time (s)")
-			plt.ylabel("Encoder position")
-			plt.title(title)
-
-			plt.legend(loc='upper right')
-
-			# Draw a vertical line at the end of each cycle
-			for endpoints in cycleStopTimes:
-				plt.axvline(x=endpoints)
+# 	plt.figure(5)
+# 	plt.yscale('log')
+# 	plt.hist(streamCommandTimes, bins=100, label = 'Stream Commands')
+# 	plt.yscale('log')
+# 	plt.title("Commands")
+# 	plt.legend(loc='upper right')
+# 	plt.xlabel("Time (ms)")
+# 	plt.ylabel("Occurrences")
 
 
+# 	##### end command times plotting ########################################33
 
-	plt.show()
+# 	if (secondDevice):
+# 		if (controllerType == Controller.current):
+# 			plt.figure(2)
+# 			title = "Current control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
+# 				str(signalAmplitude) + " mA amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
+# 			plt.plot(times, requests, color = 'b', label = 'desired current')
+# 			plt.plot(times, measurements1, color = 'r', label = 'measured current')
+# 			plt.xlabel("Time (s)")
+# 			plt.ylabel("Motor current (mA)")
+# 			plt.title(title)
+
+# 			plt.legend(loc='upper right')
+
+# 			# Draw a vertical line at the end of each cycle
+# 			for endpoints in cycleStopTimes:
+# 				plt.axvline(x=endpoints)
+
+# 		elif (controllerType == Controller.position):
+# 			plt.figure(2)
+# 			title = "Position control with " + "{:.2f}".format(actual_frequency) + " Hz, " + \
+# 				str(signalAmplitude) + " ticks amplitude " + signalTypeStr + " and " + "{:.2f}".format(command_frequency) + " Hz commands"
+# 			plt.plot(times, requests, color = 'b', label = 'desired position')
+# 			plt.plot(times, measurements1, color = 'r', label = 'measured position')
+# 			plt.xlabel("Time (s)")
+# 			plt.ylabel("Encoder position")
+# 			plt.title(title)
+
+# 			plt.legend(loc='upper right')
+
+# 			# Draw a vertical line at the end of each cycle
+# 			for endpoints in cycleStopTimes:
+# 				plt.axvline(x=endpoints)
+
+
+
+# 	plt.show()
 
 if __name__ == '__main__':
 	baudRate = sys.argv[1]

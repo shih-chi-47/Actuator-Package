@@ -1,8 +1,8 @@
 import os, sys
 from time import sleep, time, strftime
-import matplotlib
-import matplotlib.pyplot as plt
-matplotlib.use('WebAgg')
+# import matplotlib
+# import matplotlib.pyplot as plt
+# matplotlib.use('WebAgg')
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
@@ -76,14 +76,14 @@ def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 75
 	
 	# Plot before we exit:
 	print("=== Plotting with matplotlib ===")
-	title = "Impedance Control Demo"
-	plt.plot(times, requests, color = 'b', label = 'Desired position')
-	plt.plot(times, measurements, color = 'r', label = 'Measured position')
-	plt.xlabel("Time (s)")
-	plt.ylabel("Encoder position")
-	plt.title(title)
-	plt.legend(loc='upper right')
-	plt.show()
+	# title = "Impedance Control Demo"
+	# plt.plot(times, requests, color = 'b', label = 'Desired position')
+	# plt.plot(times, measurements, color = 'r', label = 'Measured position')
+	# plt.xlabel("Time (s)")
+	# plt.ylabel("Encoder position")
+	# plt.title(title)
+	# plt.legend(loc='upper right')
+	# plt.show()
 	
 	return result
 
