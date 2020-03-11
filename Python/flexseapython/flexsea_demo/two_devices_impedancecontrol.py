@@ -19,7 +19,7 @@ def printDevice(actPackState):
 
 
 
-def fxTwoDevicePositionControl(port0, port1, baudRate):
+def fxTwoDeviceImpedanceControl(port0, port1, baudRate):
 
 	devId0 = fxOpen(port0, baudRate, 0)
 	devId1 = fxOpen(port1, baudRate, 0)
