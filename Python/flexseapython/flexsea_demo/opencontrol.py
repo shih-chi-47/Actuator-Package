@@ -5,7 +5,7 @@ pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
 from fxUtil import *
 
-def fxOpenControl(port, baudRate, time = 2, num_times = 2, time_resolution = 0.1, maxVoltage = 3000, sign = -1):
+def fxOpenControl(port, baudRate, time = 5, num_times = 1, time_resolution = 0.1, maxVoltage = 3000, sign = -1):
 	devId = fxOpen(port, baudRate, 0)
 	fxStartStreaming(devId, 100, True)
 	print("Setting open control...")
@@ -23,6 +23,13 @@ def fxOpenControl(port, baudRate, time = 2, num_times = 2, time_resolution = 0.1
 			fxSendMotorCommand(devId, FxVoltage, mV)
 			print('Open control demo... \nRamping up open controller...')
 			exoState = fxReadDevice(devId)
+			print('State time: ', exoState.timestamp)
+			print('Accel X: ', exoState.accelx, ', Accel Y: ', exoState.accely, ' Accel Z: ', exoState.accelz)
+			print('Gyro X: ', exoState.gyrox, ', Gyro Y: ', exoState.gyroy, ' Gyro Z: ', exoState.gyroz)
+			print('Motor angle: ', exoState.encoderAngle, ', Motor voltage: ', exoState.motorVoltage)
+
+		for i in range(0, numSteps):
+			sleep(time_resolution)
 			print('State time: ', exoState.timestamp)
 			print('Accel X: ', exoState.accelx, ', Accel Y: ', exoState.accely, ' Accel Z: ', exoState.accelz)
 			print('Gyro X: ', exoState.gyrox, ', Gyro Y: ', exoState.gyroy, ' Gyro Z: ', exoState.gyroz)
