@@ -1,8 +1,12 @@
 import os, sys
 from time import sleep, time, strftime
-import matplotlib
+import matplotlib as mpl
+mpl.use('WebAgg')
+mpl.rcParams['webagg.address'] = "0.0.0.0"
+mpl.rcParams['webagg.open_in_browser'] = 0
+
 import matplotlib.pyplot as plt
-matplotlib.use('WebAgg')
+
 
 pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
@@ -13,9 +17,14 @@ kp = 100
 ki = 32
 K = 325
 B = 0
-B_Increments = 125
+B_Increments = 200
 
-def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 7500, transition_time = 0.8, resolution = 500):
+kp = 0
+ki = 0
+K_Increments = 10
+B_Increments = 100
+
+def fxImpedanceControl(port, baudRate, expTime = 20, time_step = 0.02, delta = 7500, transition_time = 1, resolution = 500):
 
 	devId = fxOpen(port, baudRate, 0) 
 	fxStartStreaming(devId, resolution, True)
@@ -39,6 +48,7 @@ def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 75
 	fxSendMotorCommand(devId, FxImpedance, initialAngle)
 	# Set gains
 	global B
+	global K
 	fxSetGains(devId, kp, ki, 0, K, B)
 
 	# Select transition rate and positions
@@ -53,11 +63,15 @@ def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 75
 	# Run demo
 	print(result)
 	B = -B_Increments # We do that to make sure we start at 0
+	B = 0 
+
 	for i in range(num_time_steps):
 		data = fxReadDevice(devId)
 		measuredPos = data.encoderAngle
 		if i % transition_steps == 0:
 			B = B + B_Increments	# Increments every cycle
+			K = K + K_Increments
+			
 			fxSetGains(devId, kp, ki, 0, K, B)
 			delta = abs(positions[currentPos] - measuredPos)
 			result &= delta < resolution
@@ -65,7 +79,7 @@ def fxImpedanceControl(port, baudRate, expTime = 7, time_step = 0.02, delta = 75
 			fxSendMotorCommand(devId, FxImpedance, positions[currentPos])
 		sleep(time_step)
 		preamble = "Holding position: {}...".format(positions[currentPos])
-		print(preamble)	
+		print(preamble, " Achieve: ", fxReadDevice(devId).encoderAngle)	
 		# Plotting:
 		measurements.append(measuredPos)
 		times.append(time() - t0)
