@@ -9,41 +9,43 @@ kp = 100
 ki = 32
 K = 325
 B = 0
-B_Increments = 10
+B_Increments = 100
 
-def fxImpedanceControl(port, baudRate, exptime = 7, time_step = 0.1, resolution = 100):
+def fxImpedanceControl(port, baudRate, exptime = 10, time_step = 0.1, resolution = 100):
 	devId = fxOpen(port, baudRate, 0)
 	fxStartStreaming(devId, resolution, True)
-    sleep(0.1)
+	sleep(0.1)
 
-    actPackState = fxReadDevice(devId)
-    printDevice(actPackState)
-    initialAngle = actPackState.encoderAngle
+	actPackState = fxReadDevice(devId)
+	# printDevice(actPackState)
+	initialAngle = actPackState.encoderAngle
 
 	# set gains
-    global B
+	global B
 	fxSetGains(devId, kp, ki, 0, K, B)
-	
-    fxSendMotorCommand(devId, FxImpedance, initialAngle)
-    sleep(0.1)
 
-	num_time_steps = int((time/2)/time_resolution)
+	fxSendMotorCommand(devId, FxImpedance, initialAngle)
+	sleep(0.1)
 
-    for i in range(num_time_steps):
-        B = B + B_Increments
-        fxSetGains(devId, kp, ki, 0, K, B)
-        fxSendMotorCommand(devId, FxImpdeance, initialAngle)
+	num_time_steps = int(exptime/time_step)
 
-        sleep(time_step)
+	for i in range(num_time_steps):
+		B = B + B_Increments
+		fxSetGains(devId, kp, ki, 0, K, B)
+		fxSendMotorCommand(devId, FxImpedance, initialAngle)
+
+		sleep(time_step)
 		preamble = "Holding position: {}...".format(initialAngle)
 		print(preamble)
-        print("with controller: K=", K, ", B=", B)
+		print("with controller: K=", K, ", B=", B)
 
 		actPackState = fxReadDevice(devId)
-		printDevice(actPackState)
+		# printDevice(actPackState)
 		currentAngle = actPackState.encoderAngle
 		
 		print("Measured delta is: ", currentAngle - initialAngle, flush=True)
+
+	fxClose(devId)
 
 	return True
 
