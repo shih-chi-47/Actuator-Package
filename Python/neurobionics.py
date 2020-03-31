@@ -1,7 +1,11 @@
 
-from DataLogger import dataLogger
+# from DataLogger import dataLogger
+
+import numpy as np
 
 
+from flexseapython.pyFlexsea import *
+from flexseapython.fxUtil import *
 
 #################### SETUP ####################
 
@@ -26,100 +30,87 @@ kt = 0.096     	# Motor constant
 
 def checkBatteries(count,devId):
 	# Check battery voltage
-    actPackState = fxReadDevice(devId)
+	actPackState = fxReadDevice(devId)
 
-    if actPackState.batteryVoltage <= 34000:
-        print('\n***BATTERY VOLTAGE LOW" %.3f V***\n' %actPackState.batteryVoltage/1000)
-    elif:
-        print('\nVoltage: %.3f V' %actPackState.batteryVoltage/1000)
+	if actPackState.batteryVoltage <= 34000:
+		print('\n***BATTERY VOLTAGE LOW" %.3f V***\n' % (actPackState.batteryVoltage/1000))
+	else:
+		print('\nVoltage: %.3f V' % (actPackState.batteryVoltage/1000))
 
 
-def homeAndMap(home,vHoming,homingRate,devId,filename,saveDataLogger=False):
+def homeAndMap(vHoming,homingRate,devId):
 	# Purpose: goes through homing routine and exports a text file of joint degree and motor counts. This should be called whenever the motor is first turned on 
-	posMinMotor, posMinJoint, temp	= homing(home,-vHoming,homingRate,devId,filename,saveDataLogger)
-	posMaxMotor, posMaxJoint, dl 	= homing(home,vHoming,homingRate,devId,filename,saveDataLogger)
+	posMaxMotor, posMaxJoint 	= homing(vHoming,homingRate,devId)
+
+	# print('~~~~~~~~~~')	
+	# # fxSetGains(devId, 50, 3, 0, 0, 0)
+	# # fxSendMotorCommand(devId, FxPosition, -200)
+	# sleep(1)
+	# print('~~~~~~~~~~')
+
+	posMinMotor, posMinJoint	= homing(-vHoming,homingRate,devId)
 	
-	if saveDataLogger:
-		dl.myData.pop()
-		dl.myData.pop()
-		dl.myData.pop()
-		dl.myData.pop()
-		dl.myData.pop()
-
-		dl.writeOut()
+	return posMaxMotor, posMaxJoint, posMinMotor, posMinJoint
 
 
-def homing(home,vHoming,homingRate,devId,filename='', saveDataLogger=False):
+def homing(vHoming,homingRate,devId):
 	# Purpose: moves joint until hitting the hardstop
 
 	actPackState = fxReadDevice(devId)
 
-    posFinalMotor 	= actPackState.encoderAngle
-    posFinalJoint 	= actPackState.ankleAngle
+	posFinalMotor 	= actPackState.encoderAngle
+	posFinalJoint 	= actPackState.ankleAngle
 	print("posFinalJoint",posFinalJoint )
 
-	dl = []
-	if saveDataLogger:
-		dl 				= dataLogger('encMap_' + filename + '.txt')
-		dl.clearData()
+	try:
+		print('Homing...')
 
-	if home == 'y':
-		try:
-			print('Homing...')
+		# start rotating joint
+		fxSendMotorCommand(devId, FxVoltage, vHoming)
+		
+		actPackState = fxReadDevice(devId)
+		posCurr = actPackState.encoderAngle
+		sleep(0.5)
+		# sleep(1)
 
-            # start rotating joint
-            setMotorCommand(devId, FxVoltage, vHoming)
-            
+		print(posCurr)
+
+		keepGoing 	= True
+			
+		# Homing routine
+		count = 0
+		while keepGoing:
+			sleep(homingRate)
+
+			# Get previous position
+			posPrev 	= posCurr					
+
+			# Get current position
 			actPackState = fxReadDevice(devId)
-            posCurr = actPackState.encoderAngle
-            sleep(0.5)
+			posCurr = actPackState.encoderAngle		
+			print(count, posCurr)
+			count = count + 1
 
-			print(posCurr)
+			# Get difference
+			posDiff 	= posCurr - posPrev			
 
-			if saveDataLogger:
-                # Add data to file
-                d1.appendData([fxReadDevice(devId).ankleAngle*countToDeg] + [posCurr]) 
+			if -degToCount/2 <= posDiff <= degToCount/2:
+				print('posdiff: ', posDiff)
+				print('degToCount/2: ', degToCount/2)
 
-			keepGoing 	= True
-				
-			# Homing routine
-			while keepGoing:
-				sleep(homingRate)
+				# Set motor voltage to 0 mV
+				fxSendMotorCommand(devId, FxVoltage, 0)
 
-                # Get previous position
-				posPrev 	= posCurr					
-
-                # Get current position
+				# Send/receive controller/sensor data				
 				actPackState = fxReadDevice(devId)
-                posCurr = actPackState.encoderAngle		
-				print(posCurr)
-                
-                # Get difference
-				posDiff 	= posCurr - posPrev			
-				
-				if saveDataLogger:
-                    # Add data to file
-					dl.appendData([fxReadDevice(devId).ankleAngle*countToDeg] + [posCurr])	
 
-				if -degToCount/2 <= posDiff <= degToCount/2:
-					print('posdiff: ', posDiff)
-					print('degToCount: ', degToCount)
+				posFinalMotor 	= actPackState.encoderAngle
+				posFinalJoint 	= actPackState.ankleAngle
 
-                    # Set motor voltage to XXX mV
-                    setMotorCommand(devId, FxVoltage, 0)
+				keepGoing 		= False
+				print('Homing successful.\n')
 
-                    # Send/receive controller/sensor data				
-                    actPackState = fxReadDevice(devId)
+	except KeyboardInterrupt:
+		print('\n***Homing routine stopped by user***\n')
 
-                    posFinalMotor 	= actPackState.encoderAngle
-                    posFinalJoint 	= actPackState.ankleAngle
-
-					keepGoing 		= False
-					print('Homing successful.\n')
-
-		except KeyboardInterrupt:
-			print('\n***Homing routine stopped by user***\n')
-	else:
-		print('\n***Did not run homing routine***\n')
-
-	return posFinalMotor, posFinalJoint, dl
+	return posFinalMotor, posFinalJoint
