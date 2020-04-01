@@ -7,17 +7,17 @@ import traceback
 from flexseapython.pyFlexsea import *
 from flexseapython.fxUtil import *
 from flexseapython.flexsea_demo.readonly import fxReadOnly
-from flexseapython.flexsea_demo.opencontrol import fxOpenControl
-from flexseapython.flexsea_demo.currentcontrol import fxCurrentControl
 from flexseapython.flexsea_demo.positioncontrol import fxPositionControl
+from flexseapython.flexsea_demo.twopositioncontrol import fxTwoPositionControl
+from flexseapython.flexsea_demo.opencontrol import fxOpenControl
+from flexseapython.flexsea_demo.impedancecontrol_demo import fxImpedanceControl
+from flexseapython.flexsea_demo.currentcontrol import fxCurrentControl
+from flexseapython.flexsea_demo.two_devices_positioncontrol import fxTwoDevicePositionControl
+from flexseapython.flexsea_demo.two_devices_leaderfollower import fxLeaderFollower
+from flexseapython.flexsea_demo.two_devices_impedancecontrol import fxTwoDeviceImpedanceControl
 # from flexseapython.flexsea_demo.high_speed_test import fxHighSpeedTest
 # from flexseapython.flexsea_demo.high_stress_test import fxHighStressTest
-from flexseapython.flexsea_demo.two_devices_positioncontrol import fxTwoDevicePositionControl
 # from flexseapython.flexsea_demo.impedancecontrol import fxImpedanceControl
-from flexseapython.flexsea_demo.impedancecontrol_demo import fxImpedanceControl
-from flexseapython.flexsea_demo.two_devices_leaderfollower import fxLeaderFollower
-from flexseapython.flexsea_demo.twopositioncontrol import fxTwoPositionControl
-from flexseapython.flexsea_demo.two_devices_impedancecontrol import fxTwoDeviceImpedanceControl
 
 def fxRunFindPoles(port, baudRate):
 	devId = fxOpen(port, baudRate, 0)
@@ -35,7 +35,7 @@ def main():
 	try:
 		expNumb = selectExperiment()
 		
-		if (expNumb == 5 or expNumb == 6): # High speed/stress tests
+		if (expNumb == 9 or expNumb == 10): # High speed/stress tests
 			numDevices = input('\nHow many devices to use for high speed test (1 or 2)?\n')
 			if (int(numDevices) == 1):
 				experiments[expNumb][0](ports[0],int(baudRate))
@@ -45,7 +45,7 @@ def main():
 				print('Invalid number of devices to use for high speed test. Exiting...')
 				exit()
 
-		elif(expNumb < len(experiments) - 2):
+		elif(expNumb < len(experiments) - 3):
 			experiments[expNumb][0](ports[0],int(baudRate))
 		else:
 			experiments[expNumb][0](ports[0],ports[1],int(baudRate))
@@ -56,18 +56,18 @@ def main():
 
 experiments =  [									\
 	(fxReadOnly,		"Read Only"),			\
-	(fxOpenControl, "Open Control"),		\
-	(fxCurrentControl, "Current Control"),	\
 	(fxPositionControl, "Position Control"),	\
-	(fxImpedanceControl, "Impedance Control"), \
-	# (fxHighSpeedTest, "High Speed Test"),	\
-	# (fxHighStressTest, "High Stress Test"),	\
-#	(fxUserRW, "User RW"), \
-	(fxRunFindPoles,	"Find Poles"),			\
 	(fxTwoPositionControl, "Two Positions Control"), \
+	(fxOpenControl, "Open Control"),		\
+	(fxImpedanceControl, "Impedance Control"), \
+	(fxCurrentControl, "Current Control"),	\
 	(fxTwoDevicePositionControl,	"Two Devices Position Control"),	 \
 	(fxLeaderFollower,	"Two Devices Leader Follower Control"),			\
 	(fxTwoDeviceImpedanceControl, "Two Devices Impedance Control"),
+	# (fxHighSpeedTest, "High Speed Test"),	\
+	# (fxHighStressTest, "High Stress Test"),	\
+	# (fxUserRW, "User RW"), \
+	# (fxRunFindPoles,	"Find Poles"),			\
 ]
 
 def selectExperiment():
