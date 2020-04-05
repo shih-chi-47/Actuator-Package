@@ -38,6 +38,7 @@ def fxPositionControl(port, baudRate, time = 5, time_step = 0.1,  resolution = 1
 		
 		print("Measured delta is: ", currentAngle - initialAngle, flush=True)
 
+	fxStopStreaming(devId)
 	fxClose(devId)
 
 	return True

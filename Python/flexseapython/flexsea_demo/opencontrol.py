@@ -5,13 +5,13 @@ pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
 from fxUtil import *
 
-def fxOpenControl(port, baudRate, time = 5, num_times = 1, time_resolution = 0.1, maxVoltage = 3000, sign = -1):
+def fxOpenControl(port, baudRate, time = 9, num_times = 1, time_resolution = 0.1, maxVoltage = 3000, sign = -1):
 	devId = fxOpen(port, baudRate, 0)
 	fxStartStreaming(devId, 100, True)
 	print("Setting open control...")
 	fxSendMotorCommand(devId, FxVoltage, 0)
 	sleep(0.5)
-	numSteps = int((time/2)/time_resolution)
+	numSteps = int((time/3)/time_resolution)
 	direction = 1
 
 	for time in range(0, num_times):
@@ -46,6 +46,9 @@ def fxOpenControl(port, baudRate, time = 5, num_times = 1, time_resolution = 0.1
 			print('Gyro X: ', exoState.gyrox, ', Gyro Y: ', exoState.gyroy, ' Gyro Z: ', exoState.gyroz)
 			print('Motor angle: ', exoState.encoderAngle, ', Motor voltage: ', exoState.motorVoltage)
 
+	fxStopStreaming(devId)
+	fxClose(devId)
+	
 	return True
 
 if __name__ == '__main__':

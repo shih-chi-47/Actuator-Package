@@ -10,7 +10,7 @@ from flexseapython.flexsea_demo.readonly import fxReadOnly
 from flexseapython.flexsea_demo.positioncontrol import fxPositionControl
 from flexseapython.flexsea_demo.twopositioncontrol import fxTwoPositionControl
 from flexseapython.flexsea_demo.opencontrol import fxOpenControl
-from flexseapython.flexsea_demo.impedancecontrol_demo import fxImpedanceControl
+from flexseapython.flexsea_demo.impedancecontrol import fxImpedanceControl
 from flexseapython.flexsea_demo.currentcontrol import fxCurrentControl
 from flexseapython.flexsea_demo.two_devices_positioncontrol import fxTwoDevicePositionControl
 from flexseapython.flexsea_demo.two_devices_leaderfollower import fxLeaderFollower
@@ -46,6 +46,7 @@ def main():
 				exit()
 
 		elif(expNumb < len(experiments) - 3):
+			# print('using ports[0]: ', ports[0])
 			experiments[expNumb][0](ports[0],int(baudRate))
 		else:
 			experiments[expNumb][0](ports[0],ports[1],int(baudRate))

@@ -58,7 +58,9 @@ def fxTwoDeviceImpedanceControl(port0, port1, baudRate):
 		pass
 
 	print('Turning off impedance control...')
+	fxStopStreaming(devId0)
 	fxClose(devId0)
+	fxStopStreaming(devId1)
 	fxClose(devId1)
 
 if __name__ == '__main__':

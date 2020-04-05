@@ -9,7 +9,7 @@ kp = 100
 ki = 32
 K = 325
 B = 0
-B_Increments = 100
+B_Increments = 50
 
 def fxImpedanceControl(port, baudRate, exptime = 10, time_step = 0.1, resolution = 100):
 	devId = fxOpen(port, baudRate, 0)
@@ -45,6 +45,7 @@ def fxImpedanceControl(port, baudRate, exptime = 10, time_step = 0.1, resolution
 		
 		print("Measured delta is: ", currentAngle - initialAngle, flush=True)
 
+	fxStopStreaming(devId)
 	fxClose(devId)
 
 	return True

@@ -5,14 +5,14 @@ pardir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(pardir)
 from fxUtil import *
 
-def fxCurrentControl(port, baudRate, holdCurrent = [1000], time = 4, time_step = 0.1):
+def fxCurrentControl(port, baudRate, holdCurrent = [500], time = 5, time_step = 0.1):
 	devId = fxOpen(port, baudRate, 0)
-	fxStartStreaming(devId, 100, True)
+	fxStartStreaming(devId, 200, True)
 	result = True
 	print('Setting controller to current...')
 	fxSetGains(devId, 50, 32, 0, 0, 0)
 	sleep(0.5)
-	prevCurrent = holdCurrent[0]
+	prevCurrent = holdCurrent[0]/2
 	num_time_steps = int(time/time_step)
 
 	for current in holdCurrent:
@@ -46,6 +46,9 @@ def fxCurrentControl(port, baudRate, holdCurrent = [1000], time = 4, time_step =
 		sleep(0.2)
 		actPack = fxReadDevice(devId)
 		currentAngle = actPack.encoderAngle
+
+	fxStopStreaming(devId)
+	fxClose(devId)
 
 	return True
 

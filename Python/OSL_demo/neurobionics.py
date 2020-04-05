@@ -42,11 +42,7 @@ def homeAndMap(vHoming,homingRate,devId):
 	# Purpose: goes through homing routine and exports a text file of joint degree and motor counts. This should be called whenever the motor is first turned on 
 	posMaxMotor, posMaxJoint 	= homing(vHoming,homingRate,devId)
 
-	# print('~~~~~~~~~~')	
-	# # fxSetGains(devId, 50, 3, 0, 0, 0)
-	# # fxSendMotorCommand(devId, FxPosition, -200)
-	# sleep(1)
-	# print('~~~~~~~~~~')
+	sleep(1)
 
 	posMinMotor, posMinJoint	= homing(-vHoming,homingRate,devId)
 	

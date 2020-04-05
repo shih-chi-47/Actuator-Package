@@ -61,7 +61,9 @@ def fxLeaderFollower(leaderPort, followerPort, baudRate):
 		print(traceback.format_exc())
 
 	print('Turning off position control...')
+	fxStopStreaming(devId0)
 	fxClose(devId0)
+	fxStopStreaming(devId1)
 	fxClose(devId1)
 
 if __name__ == '__main__':
