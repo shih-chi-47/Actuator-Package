@@ -14,7 +14,7 @@ def printDevice(actPackState):
 	print('Motor angle: ', actPackState.encoderAngle, ', Motor voltage: ', actPackState.motorVoltage, flush=True)
 
 
-def fxLeaderFollower(leaderPort, followerPort, baudRate):
+def fxLeaderFollower(leaderPort, followerPort, baudRate, expTime = 10, time_step = 0.01):
 
 	devId0 = fxOpen(leaderPort, baudRate, 0)
 	devId1 = fxOpen(followerPort, baudRate, 0)
@@ -39,26 +39,22 @@ def fxLeaderFollower(leaderPort, followerPort, baudRate):
 	fxSetGains(devId1, 50, 3, 0, 0, 0)
 	fxSendMotorCommand(devId1, FxPosition, initialAngle1)
 
-	count = 0
-	try:
-		while(True):
-			sleep(0.05)
+	num_time_steps = int(expTime/time_step)
+	for i in range(num_time_steps):
+		sleep(time_step)
 
-			leaderData = fxReadDevice(devId0)
-			followerData = fxReadDevice(devId0)
+		leaderData = fxReadDevice(devId0)
+		followerData = fxReadDevice(devId0)
 
-			angle0 = leaderData.encoderAngle
-			
-			diff = angle0 - initialAngle0
-			fxSendMotorCommand(devId1, FxPosition, initialAngle1 + diff)
-			
-			print("device {} following device {}".format(devId1, devId0))
-			
-			printDevice(followerData)
-			printDevice(leaderData)
-
-	except Exception as e:
-		print(traceback.format_exc())
+		angle0 = leaderData.encoderAngle
+		
+		diff = angle0 - initialAngle0
+		fxSendMotorCommand(devId1, FxPosition, initialAngle1 + diff)
+		
+		print("device {} following device {}".format(devId1, devId0))
+		
+		printDevice(followerData)
+		printDevice(leaderData)
 
 	print('Turning off position control...')
 	fxStopStreaming(devId0)

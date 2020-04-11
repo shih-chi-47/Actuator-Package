@@ -63,8 +63,8 @@ experiments =  [									\
 	(fxImpedanceControl, "Impedance Control"), \
 	(fxCurrentControl, "Current Control"),	\
 	(fxTwoDevicePositionControl,	"Two Devices Position Control"),	 \
-	(fxLeaderFollower,	"Two Devices Leader Follower Control"),			\
 	(fxTwoDeviceImpedanceControl, "Two Devices Impedance Control"),
+	(fxLeaderFollower,	"Two Devices Leader Follower Control"),			\
 	# (fxHighSpeedTest, "High Speed Test"),	\
 	# (fxHighStressTest, "High Stress Test"),	\
 	# (fxUserRW, "User RW"), \

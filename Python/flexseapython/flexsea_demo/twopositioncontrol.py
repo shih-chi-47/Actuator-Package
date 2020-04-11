@@ -69,7 +69,7 @@ def fxTwoPositionControl(port, baudRate, expTime = 5, time_step = 0.1, delta = 1
         # measurements.append(measuredPos)
 
     # close device and do device cleanup
-	fxStopStreaming(devId)
+    fxStopStreaming(devId)
     close_check = fxClose(devId)
 
     # Plot before exit:
