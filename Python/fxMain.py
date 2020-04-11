@@ -10,12 +10,14 @@ from flexseapython.flexsea_demo.readonly import fxReadOnly
 from flexseapython.flexsea_demo.opencontrol import fxOpenControl
 from flexseapython.flexsea_demo.currentcontrol import fxCurrentControl
 from flexseapython.flexsea_demo.positioncontrol import fxPositionControl
-from flexseapython.flexsea_demo.high_speed_test import fxHighSpeedTest
-from flexseapython.flexsea_demo.high_stress_test import fxHighStressTest
+# from flexseapython.flexsea_demo.high_speed_test import fxHighSpeedTest
+# from flexseapython.flexsea_demo.high_stress_test import fxHighStressTest
 from flexseapython.flexsea_demo.two_devices_positioncontrol import fxTwoDevicePositionControl
 from flexseapython.flexsea_demo.impedancecontrol import fxImpedanceControl
 from flexseapython.flexsea_demo.two_devices_leaderfollower import fxLeaderFollower
 #from flexseapython.flexsea_demo.twopositioncontrol import fxTwoPositionControl
+
+from flexseapython.flexsea_demo.two_devices_position_synchronization import fxSync2Device
 
 def fxRunFindPoles(port, baudRate):
 	devId = fxOpen(port, baudRate, 0)
@@ -58,13 +60,14 @@ experiments =  [									\
 	(fxCurrentControl, "Current Control"),	\
 	(fxPositionControl, "Position Control"),	\
 	(fxImpedanceControl, "Impedance Control"), \
-	(fxHighSpeedTest, "High Speed Test"),	\
-	(fxHighStressTest, "High Stress Test"),	\
+	# (fxHighSpeedTest, "High Speed Test"),	\
+	# (fxHighStressTest, "High Stress Test"),	\
 #	(fxUserRW, "User RW"), \
 	(fxRunFindPoles,	"Find Poles"),			\
 #	(fxTwoPositionControl, "Two Positions Control"), \
 	(fxTwoDevicePositionControl,	"Two Devices Position Control"),	 \
-	(fxLeaderFollower,	"Two Devices Leader Follower Control"),
+	(fxLeaderFollower,	"Two Devices Leader Follower Control"), \
+	(fxSync2Device, "Two Devices Synchronization")
 ]
 
 def selectExperiment():
