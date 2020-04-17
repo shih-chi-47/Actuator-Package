@@ -20,6 +20,7 @@ from flexseapython.flexsea_demo.two_devices_impedancecontrol import fxTwoDeviceI
 # from flexseapython.flexsea_demo.impedancecontrol import fxImpedanceControl
 
 from flexseapython.flexsea_demo.two_devices_position_synchronization import fxSync2Device
+from flexseapython.flexsea_demo.Stop import STOP
 
 def fxRunFindPoles(port, baudRate):
 	devId = fxOpen(port, baudRate, 0)
@@ -37,17 +38,17 @@ def main():
 	try:
 		expNumb = selectExperiment()
 		
-		if (expNumb == 9 or expNumb == 10): # High speed/stress tests
-			numDevices = input('\nHow many devices to use for high speed test (1 or 2)?\n')
-			if (int(numDevices) == 1):
-				experiments[expNumb][0](ports[0],int(baudRate))
-			elif (int(numDevices) == 2):
-				experiments[expNumb][0](ports[0],int(baudRate),ports[1])
-			else:
-				print('Invalid number of devices to use for high speed test. Exiting...')
-				exit()
-
-		elif(expNumb < len(experiments) - 3):
+		# if (expNumb == 9 or expNumb == 10): # High speed/stress tests
+		# 	numDevices = input('\nHow many devices to use for high speed test (1 or 2)?\n')
+		# 	if (int(numDevices) == 1):
+		# 		experiments[expNumb][0](ports[0],int(baudRate))
+		# 	elif (int(numDevices) == 2):
+		# 		experiments[expNumb][0](ports[0],int(baudRate),ports[1])
+		# 	else:
+		# 		print('Invalid number of devices to use for high speed test. Exiting...')
+		# 		exit()
+		
+		if(expNumb < len(experiments) - 4):
 			# print('using ports[0]: ', ports[0])
 			experiments[expNumb][0](ports[0],int(baudRate))
 		else:
@@ -65,8 +66,10 @@ experiments =  [									\
 	(fxImpedanceControl, "Impedance Control"), \
 	(fxCurrentControl, "Current Control"),	\
 	(fxTwoDevicePositionControl,	"Two Devices Position Control"),	 \
-	(fxTwoDeviceImpedanceControl, "Two Devices Impedance Control"),
+	# (fxTwoDeviceImpedanceControl, "Two Devices Impedance Control"),
 	(fxLeaderFollower,	"Two Devices Leader Follower Control"),			\
+	(fxSync2Device, "Synchronize!!"),\
+	(STOP, "STOP!!!"),\
 	# (fxHighSpeedTest, "High Speed Test"),	\
 	# (fxHighStressTest, "High Stress Test"),	\
 	# (fxUserRW, "User RW"), \

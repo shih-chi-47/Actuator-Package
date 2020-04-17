@@ -39,12 +39,32 @@ def fxSync2Device(leaderPort, followerPort, baudRate):
     sleep(0.5)
 
     fxSetGains(devId0, kp, kd, 0, 0, 0)
-    fxSendMotorCommand(devId0, FxPosition, initialAngle0)
+    fxSendMotorCommand(devId0, FxCurrent, 0)
 
     fxSetGains(devId1, kp, kd, 0, 0, 0)
-    fxSendMotorCommand(devId1, FxPosition, initialAngle1)
+    fxSendMotorCommand(devId1, FxCurrent, 0)
 
     # sleep(5)
+    
+    e0 = 0
+    e0_pre = 0
+    e0d = 0
+
+    e1 = 0 
+    e1_pre = 0
+    e1d = 0
+    
+    G = 0.02
+    K = G*1
+    B = G*0.8
+    B = 0
+
+    tau_lim = 2000
+
+    friction = 650
+    # friction = 0
+
+    deadband = 10
 
     count = 0
     try:
@@ -59,9 +79,34 @@ def fxSync2Device(leaderPort, followerPort, baudRate):
             
             diff0 = angle0 - initialAngle0
             diff1 = angle1 - initialAngle1
+
+            e0 = -diff0 + diff1
+            e1 = -diff1 + diff0
+
+            e0d = e0 - e0_pre
+            e1d = e1 - e1_pre
+
+            tau0 = K*e0 + B*e0d
+            tau1 = K*e1 + B*e1d
+
+            if(tau0 >deadband):
+                tau0 = tau0 + friction
+            elif(tau0 < -deadband):
+                tau0 = tau0 - friction
+            if(tau1 > deadband):
+                tau1 = tau1 + friction
+            elif(tau1 < -deadband):
+                tau1 = tau1 - friction
+
+
+            tau0 = min(max(tau0, -tau_lim), tau_lim)
+            tau1 = min(max(tau1, -tau_lim), tau_lim)
             
-            fxSendMotorCommand(devId0, FxPosition, initialAngle0 + diff1)
-            fxSendMotorCommand(devId1, FxPosition, initialAngle1 + diff0)
+            # fxSendMotorCommand(devId0, FxPosition, tau0)
+            # fxSendMotorCommand(devId1, FxPosition, tau1)
+
+            fxSendMotorCommand(devId0, FxCurrent, tau0)
+            fxSendMotorCommand(devId1, FxCurrent, tau1)
 
             
             print("device {} following device {}".format(devId1, devId0))
@@ -69,9 +114,11 @@ def fxSync2Device(leaderPort, followerPort, baudRate):
             # printDevice(Data0)
             # printDevice(Data1)
 
-            print('dev0: ', angle0, initialAngle0)
-            print('dev1: ', angle1, initialAngle1)
-            print(diff0, diff1)
+
+            print('diff: ',diff0, diff1)
+            print('error:', e0, e1)
+            print('tau:  ', tau0, tau1)
+            print('\n')
 
     except Exception as e:
         print(traceback.format_exc())
