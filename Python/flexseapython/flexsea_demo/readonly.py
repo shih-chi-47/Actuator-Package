@@ -71,6 +71,9 @@ def fxReadOnly(port, baudRate, time = 6,time_step = 0.1):
 
 		sleep(time_step)
 		
+	fxStopStreaming(devId)
+	fxClose(devId)
+
 	return True
 
 if __name__ == '__main__':

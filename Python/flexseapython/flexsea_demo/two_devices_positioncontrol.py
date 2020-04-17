@@ -13,14 +13,13 @@ def printDevice(actPackState):
 
 
 
-def fxTwoDevicePositionControl(port0, port1, baudRate):
+def fxTwoDevicePositionControl(port0, port1, baudRate, exp_time = 10, time_step = 0.1, resolution = 100):
 
 	devId0 = fxOpen(port0, baudRate, 0)
 	devId1 = fxOpen(port1, baudRate, 0)
 
-	fxStartStreaming(devId0, 200, True)
-	fxStartStreaming(devId1, 200, True)
-
+	fxStartStreaming(devId0, resolution, True)
+	fxStartStreaming(devId1, resolution, True)
 	sleep(0.2)
 
 	actPackState0 = fxReadDevice(devId0)
@@ -35,9 +34,10 @@ def fxTwoDevicePositionControl(port0, port1, baudRate):
 	fxSendMotorCommand(devId0, FxPosition, initialAngle0)
 	fxSendMotorCommand(devId1, FxPosition, initialAngle1)
 
+	num_time_steps = int(exp_time/time_step)
 	try:
-		while(True):
-			sleep(0.2)
+		for i in range(num_time_steps):
+			sleep(time_step)
 			os.system('cls')
 			preamble = "Holding position, two devices: "
 			print(preamble)
@@ -52,7 +52,10 @@ def fxTwoDevicePositionControl(port0, port1, baudRate):
 		pass
 
 	print('Turning off position control...')
+	
+	fxStopStreaming(devId0)
 	fxClose(devId0)
+	fxStopStreaming(devId1)
 	fxClose(devId1)
 
 if __name__ == '__main__':
